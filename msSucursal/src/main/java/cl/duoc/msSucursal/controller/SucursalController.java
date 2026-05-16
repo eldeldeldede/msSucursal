@@ -2,6 +2,7 @@ package cl.duoc.msSucursal.controller;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +21,7 @@ import cl.duoc.msSucursal.service.SucursalService;
 @RequestMapping("/api/v1/sucursales")
 public class SucursalController {
 
+    @Autowired
     private SucursalService service;
 
     @GetMapping
@@ -73,7 +75,7 @@ public class SucursalController {
     }
 
     @GetMapping("/dto/{id}")
-    public ResponseEntity<SucursalDTO> buscarDTO(Integer id){
+    public ResponseEntity<SucursalDTO> buscarDTO(@PathVariable Integer id){
         try {
             SucursalDTO dto = service.buscarDTO(id);
             return ResponseEntity.ok(dto);

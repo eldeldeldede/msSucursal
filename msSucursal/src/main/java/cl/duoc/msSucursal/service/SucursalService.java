@@ -48,6 +48,6 @@ public class SucursalService {
     public SucursalDTO buscarDTO(Integer id){
         Sucursal sucursal = buscarSucursal(id);
         return new SucursalDTO(sucursal.getId(), sucursal.getDireccion().getCalle() + " " + sucursal.getDireccion().getNumero() + 
-        ", " + sucursal.getDireccion().getComuna());
+        ", " + sucursal.getDireccion().getComuna().getNombre()+", " + sucursal.getDireccion().getCiudad().getNombre());
     }
 }
