@@ -20,7 +20,8 @@ public class SucursalService {
     }
 
     public Sucursal buscarSucursal(Integer id){
-        return repo.findById(id).orElseThrow(() -> new RuntimeException("Sucursal no encontrada"));
+        return repo.findById(id)
+        .orElseThrow(() -> new RuntimeException("Sucursal no encontrada"));
     }
 
     public Sucursal crearSucursal(Sucursal sucursal){
