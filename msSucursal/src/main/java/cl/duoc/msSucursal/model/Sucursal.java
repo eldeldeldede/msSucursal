@@ -39,7 +39,6 @@ public class Sucursal {
 
     @ManyToOne
     @JoinColumn(name = "direccion_id", nullable = false)
-    @JsonBackReference
     private Direccion direccion;
 
 }

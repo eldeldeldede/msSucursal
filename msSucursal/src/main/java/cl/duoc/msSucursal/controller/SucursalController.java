@@ -17,7 +17,6 @@ import cl.duoc.msSucursal.dto.SucursalDTO;
 import cl.duoc.msSucursal.model.Sucursal;
 import cl.duoc.msSucursal.service.SucursalService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Operation;
 
 @RestController
 @RequestMapping("/api/v1/sucursales")
