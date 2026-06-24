@@ -2,6 +2,7 @@ package cl.duoc.msSucursal.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -19,6 +20,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "sucursal")
+@Schema(description = "Entidad que representa una sucursal del Rent a Car")
 public class Sucursal {
 
     @Id
