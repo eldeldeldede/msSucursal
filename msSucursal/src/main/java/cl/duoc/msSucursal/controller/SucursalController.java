@@ -20,6 +20,7 @@ import io.swagger.v3.oas.annotations.Operation;
 
 @RestController
 @RequestMapping("/api/v1/sucursales")
+@Tag(name = "Sucursal", description = "Operaciones relacionadas con las sucursales")
 public class SucursalController {
 
     @Autowired
