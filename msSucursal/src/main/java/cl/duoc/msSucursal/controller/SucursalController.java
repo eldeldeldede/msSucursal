@@ -46,7 +46,7 @@ public class SucursalController {
         summary = "Registrar una nueva sucursal",
         description = "Permite registrar una nueva sucursal en el sistema del Rent a Car."
     )
-    public ResponseEntity<Sucursal> guardarSucursal(Sucursal sucursal){
+    public ResponseEntity<Sucursal> guardarSucursal(@RequestBody Sucursal sucursal){
         try {
             Sucursal sucursalNueva = service.crearSucursal(sucursal);
             return ResponseEntity.ok(sucursalNueva);

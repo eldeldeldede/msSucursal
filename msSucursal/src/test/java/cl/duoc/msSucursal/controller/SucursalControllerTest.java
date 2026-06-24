@@ -149,4 +149,28 @@ public class SucursalControllerTest {
         mock.perform(delete("/api/v1/sucursales/99"))
             .andExpect(status().isNotFound());
     }
+
+    // ---------- actualizarSucursal (PUT) ----------
+
+@Test
+public void actualizarSucursal_retorna200() throws Exception {
+    when(sucursalServ.actualizarSucursal(eq(1), any(Sucursal.class))).thenReturn(ejemSucursal);
+
+    mock.perform(put("/api/v1/sucursales/1")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(ejemSucursal)))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.nombre").value("Sucursal"));
+}
+
+@Test
+public void actualizarSucursal_retorna404() throws Exception {
+    when(sucursalServ.actualizarSucursal(eq(99), any(Sucursal.class)))
+            .thenThrow(new RuntimeException("Sucursal no encontrada"));
+
+    mock.perform(put("/api/v1/sucursales/99")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(ejemSucursal)))
+        .andExpect(status().isNotFound());
+}
 }

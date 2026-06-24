@@ -20,6 +20,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import cl.duoc.msSucursal.dto.SucursalDTO;
+import cl.duoc.msSucursal.model.Ciudad;
+import cl.duoc.msSucursal.model.Comuna;
 import cl.duoc.msSucursal.model.Direccion;
 import cl.duoc.msSucursal.model.Sucursal;
 import cl.duoc.msSucursal.repository.SucursalRepository;
@@ -28,7 +30,7 @@ import cl.duoc.msSucursal.repository.SucursalRepository;
 public class SucursalServiceTest {
 
     @Mock
-    private SucursalRepository sucursalRepo;
+    private SucursalRepository repo;
 
     @InjectMocks
     private SucursalService sucursalServ;
@@ -49,7 +51,7 @@ public class SucursalServiceTest {
 
     @Test
     void Guardar() {
-        when(sucursalRepo.save(ejemSucursal)).thenReturn(ejemSucursal);
+        when(repo.save(ejemSucursal)).thenReturn(ejemSucursal);
 
         Sucursal resultado = sucursalServ.crearSucursal(ejemSucursal);
 
@@ -59,7 +61,7 @@ public class SucursalServiceTest {
     @Test
     void buscarSucursalPorId_encontrado() {
         Optional<Sucursal> sucursal = Optional.of(ejemSucursal);
-        when(sucursalRepo.findById(1)).thenReturn(sucursal);
+        when(repo.findById(1)).thenReturn(sucursal);
 
         Sucursal resultado = sucursalServ.buscarSucursal(1);
         assertEquals(1, resultado.getId());
@@ -68,7 +70,7 @@ public class SucursalServiceTest {
 
     @Test
     void buscarSucursalPorId_noEncontrado() {
-        when(sucursalRepo.findById(1)).thenReturn(Optional.empty());
+        when(repo.findById(1)).thenReturn(Optional.empty());
         RuntimeException exception = assertThrows(RuntimeException.class, () -> {
             sucursalServ.buscarSucursal(1);
         });
@@ -77,7 +79,7 @@ public class SucursalServiceTest {
 
     @Test
     void listar_retornaLista() {
-        when(sucursalRepo.findAll()).thenReturn(List.of(ejemSucursal));
+        when(repo.findAll()).thenReturn(List.of(ejemSucursal));
 
         List<Sucursal> resultado = sucursalServ.listar();
 
@@ -87,22 +89,22 @@ public class SucursalServiceTest {
 
     @Test
     void eliminarSucursal_exitoso() {
-        when(sucursalRepo.existsById(1)).thenReturn(true);
+        when(repo.existsById(1)).thenReturn(true);
 
         assertDoesNotThrow(() -> sucursalServ.eliminarSucursal(1));
-        verify(sucursalRepo, times(1)).deleteById(1);
+        verify(repo, times(1)).deleteById(1);
     }
 
     @Test
     void eliminarSucursal_noExiste() {
-        when(sucursalRepo.existsById(99)).thenReturn(false);
+        when(repo.existsById(99)).thenReturn(false);
 
         RuntimeException exception = assertThrows(RuntimeException.class, () -> {
             sucursalServ.eliminarSucursal(99);
         });
 
         assertEquals("Sucursal no encontrada", exception.getMessage());
-        verify(sucursalRepo, times(0)).deleteById(99);
+        verify(repo, times(0)).deleteById(99);
     }
 
     @Test
@@ -114,26 +116,56 @@ public class SucursalServiceTest {
         datosNuevos.setHorarioAtencion("24/7");
         datosNuevos.setTelefono("11111111");
 
-        when(sucursalRepo.findById(1)).thenReturn(Optional.of(ejemSucursal));
-        when(sucursalRepo.save(ejemSucursal)).thenReturn(ejemSucursal);
+        when(repo.findById(1)).thenReturn(Optional.of(ejemSucursal));
+        when(repo.save(ejemSucursal)).thenReturn(ejemSucursal);
 
         Sucursal resultado = sucursalServ.actualizarSucursal(1, datosNuevos);
 
         assertEquals("Sucursal Actualizada", resultado.getNombre());
         assertEquals("nueva@sucursal.cl", resultado.getEmail());
-        verify(sucursalRepo, times(1)).save(ejemSucursal);
+        verify(repo, times(1)).save(ejemSucursal);
     }
 
     @Test
     void actualizarSucursal_noEncontrado() {
-        when(sucursalRepo.findById(99)).thenReturn(Optional.empty());
+        when(repo.findById(99)).thenReturn(Optional.empty());
 
         RuntimeException exception = assertThrows(RuntimeException.class, () -> {
             sucursalServ.actualizarSucursal(99, ejemSucursal);
         });
 
         assertEquals("Sucursal no encontrada", exception.getMessage());
-        verify(sucursalRepo, times(0)).save(any(Sucursal.class));
+        verify(repo, times(0)).save(any(Sucursal.class));
+    }
+
+    @Test
+    void buscarDTO_exitoso() {
+        // ARRANGE: la dirección necesita comuna y ciudad con nombre
+        Direccion direccion = new Direccion(1, "Calle Falsa", "123", 
+            new Ciudad(1, "Santiago"),   // ajusta según tu constructor real
+            new Comuna(1, "Santiago")    // ajusta según tu constructor real
+        );
+        ejemSucursal.setDireccion(direccion);
+
+        when(repo.findById(1)).thenReturn(Optional.of(ejemSucursal));
+
+        // ACT
+        SucursalDTO resultado = sucursalServ.buscarDTO(1);
+
+        // ASSERT
+        assertNotNull(resultado);
+        assertEquals(1, resultado.getId());
+    }
+
+    @Test
+    void buscarDTO_noEncontrado() {
+        when(repo.findById(99)).thenReturn(Optional.empty());
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            sucursalServ.buscarDTO(99);
+        });
+
+        assertEquals("Sucursal no encontrada", exception.getMessage());
     }
 
     
